@@ -37,7 +37,8 @@ RUN addgroup --system --gid 1001 nodejs && \
 # Copy static assets
 COPY --from=builder /app/public ./public
 
-# Copy the standalone build artifacts and static files with correct ownership
+# Copy the full node_modules from deps to bypass Next.js tracing missing sharp's .so dependencies on pnpm
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
